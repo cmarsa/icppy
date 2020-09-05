@@ -28,7 +28,6 @@ def fibonacci_iterative(n):
 
 
 def test_fibonacci(n):
-
     for i in range(0, n + 1):
         print(f'F({i}) : ', fibonacci_recursive(i))
         assert fibonacci_iterative(i) == fibonacci_recursive(i)
