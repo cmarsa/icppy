@@ -41,9 +41,11 @@ class Grades:
     
     def get_students(self):
         '''
-        Return a sorted list of the students in the grade book
+        Return the students in the grade book one at a time
+        in alphabetical order
         '''
         if not self.is_sorted:
             self.students.sort()
             self.is_sorted = True
-        return self.students[:]
+        for s in self.students:
+            yield s
