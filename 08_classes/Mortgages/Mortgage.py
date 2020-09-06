@@ -6,7 +6,7 @@ def find_payment(loan, r, m):
     Returns the monthly paument for a mortgage of size
         loan at a monthly eate of r for m months.
     '''
-    return loan*((r * (1 + r) ** m) / ((1 + r) ** m))
+    return loan*((r * (1 + r) ** m) / ((1 + r) ** m - 1))
 
 
 class Mortgage:
