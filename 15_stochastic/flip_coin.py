@@ -1,7 +1,7 @@
 # flip_coin.py
 import random
 import matplotlib.pyplot as plt
-from simplestats import variance, std_dev, cv
+from simplestats import mean, variance, std_dev, cv
 
 def flip(num_flips):
     '''
@@ -15,12 +15,16 @@ def flip(num_flips):
 
 
 def simulation_flip(num_flips_per_trial, num_trials):
-    '''Assumes num_flips_per_trial and num_trials positive ints'''
+    '''
+    Assumes num_flips_per_trial and num_trials positive ints
+    Returns simulation frac_heads, mean and std_dev
+    '''
     frac_heads = []
     for i in range(num_trials):
         frac_heads.append(flip(num_flips_per_trial))
-    mean = sum(frac_heads)/len(frac_heads)
-    return mean
+    simulation_mean = mean(frac_heads)
+    simulation_std_dev = std_dev(frac_heads)
+    return (frac_heads, simulation_mean, simulation_std_dev)
 
 
 def flip_plot(min_exp, max_exp):
@@ -122,5 +126,31 @@ def flip_plot_mu_sig(min_exp, max_exp, num_trials):
     plt.show()
 
 
+def make_histograms(num_flips_1, num_flips_2, num_trials):
+    '''
+    '''
+    def label_histogram(num_flips, num_trials, mean, sd):
+        plt.title(str(num_trials) + ' trials of ' \
+                      + str(num_flips) + ' flips each')
+        plt.xlabel('Fraction of Heads')
+        plt.ylabel('Number of Trials')
+        plt.annotate('Mean = ' + str(round(mean, 4)) \
+                     + '\nSD = ' + str(round(sd, 4)), size = 'x-large',
+                     xycoords = 'axes fraction', xy = (0.67, 0.5))
+    
+    val_1, mean_1, sd1 = simulation_flip(num_flips_1, num_trials)
+    plt.hist(val_1, bins = 20, color = 'gray', edgecolor = 'k')
+    xmin, xmax = plt.xlim()
+    label_histogram(num_flips_1, num_trials, mean_1, sd1)
+    
+    plt.figure()
+    val_2, mean_2, sd2 = simulation_flip(num_flips_2, num_trials)
+    plt.hist(val_2, bins = 20, color = 'gray', edgecolor = 'k')
+    plt.xlim(xmin, xmax)
+    label_histogram(num_flips_2, num_trials, mean_2, sd2)
+    plt.show()
+
+
 if __name__ == '__main__':
-    flip_plot_mu_sig(4, 20, 20)
+    # flip_plot_mu_sig(4, 20, 20)
+    make_histograms(100, 1000, 100000)
