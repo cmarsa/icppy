@@ -1,5 +1,6 @@
 # flip_coin.py
 import random
+import numpy as np
 import matplotlib.pyplot as plt
 from simplestats import mean, variance, std_dev, cv
 
@@ -151,6 +152,26 @@ def make_histograms(num_flips_1, num_flips_2, num_trials):
     plt.show()
 
 
+def show_error_bars(min_exp, max_exp, num_trials):
+    '''
+    Assumes min_exp and max_exp positive ints;
+        min_exp < max_exp num_trials a positive integer
+    Plots mean fraction of heads with error bars
+    '''
+    means, sds, x_vals = [], [], []
+    for exp in range(min_exp, max_exp + 1):
+        x_vals.append(2 ** exp)
+        frac_heads, mean, sd = simulation_flip(2 ** exp, num_trials)
+        means.append(mean)
+        sds.append(sd)
+    plt.errorbar(x_vals, means, yerr = 1.96 * np.array(sds), color = 'k')
+    plt.semilogx()
+    plt.title('Mean fraction of heads (' + str(num_trials) + ' trials)')
+    plt.xlabel('Number of flups per trial')
+    plt.ylabel('Fraction of heads & 95% confidence')
+    plt.show()
+
 if __name__ == '__main__':
     # flip_plot_mu_sig(4, 20, 20)
-    make_histograms(100, 1000, 100000)
+    # make_histograms(100, 1000, 100000)
+    show_error_bars(3, 10, 1000)
