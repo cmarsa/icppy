@@ -97,7 +97,40 @@ def plot_mean_estimation_error_bars():
     plt.legend(loc = 'best')
     plt.show()
 
+
+def plot_std_deviation_marathon():
+    times = get_boston_marathon_data('input/bm_results_2012.txt')['time']
+    pop_std = std_dev(times)
+    sample_sizes = range(2, 200, 2)
+    diffs_means = []
+    for sample_size in sample_sizes:
+        diffs = []
+        for t in range(0, 100):
+            diffs.append(abs(pop_std - std_dev(random.sample(times, sample_size))))
+        diffs_means.append(mean(diffs))
+    plt.plot(sample_sizes, diffs_means)
+    plt.xlabel('Sample size')
+    plt.ylabel('Abs(Pop. Std. - Sample Std)')
+    plt.title('Sample SD vs Population SD')
+    plt.show()
+
+
+def estimate_population_mean():
+    times = get_boston_marathon_data('input/bm_results_2012.txt')['time']
+    pop_mean = mean(times)
+    sample_size = 200
+    num_bad = 0
+    for t in range(10000):
+        sample = random.sample(times, sample_size)
+        sample_mean = sum(sample)/sample_size
+        se = std_dev(sample)/sample_size
+        if abs(pop_mean - sample_mean) > 1.96 * se:
+            num_bad += 1
+    print('Fraction outside 95% confidence interval: ', num_bad/100000)
+
 if __name__ == '__main__':
     # minutes_to_complete_race()
     # test_sample_times()
-    plot_mean_estimation_error_bars()
+    # plot_mean_estimation_error_bars()
+    # plot_std_deviation_marathon()
+    estimate_population_mean()
