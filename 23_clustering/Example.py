@@ -1,5 +1,5 @@
 # Example.py
-from .metrics import minkovski_distance
+from metrics import minkovski_distance
 
 class Example:
     '''

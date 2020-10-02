@@ -1,5 +1,15 @@
 # Cluster.py
+'''
+Clustering is an optimization problem. The goal is to find a set of clusters
+that optimizes an objective function, subject to some set of constraints. Given a
+distance metric that can be used to decide how close two examples are to each
+other, we need to define an objective function that minimizes the distance be-
+tween examples in the same cluster, i.e., minimizes the dissimilarity of the exam-
+ples within a cluster.
+'''
 import numpy as np
+from Example import Example
+
 
 class Cluster:
     '''
@@ -24,7 +34,7 @@ class Cluster:
         '''
         old_centroid = self.centroid
         self.examples = examples
-        self.centroid = self.compute_centroid
+        self.centroid = self.compute_centroid()
         return old_centroid.distance(self.centroid)
     
     def compute_centroid(self):
