@@ -3,8 +3,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from KMeans import try_kmeans, dissimilarity
 from Example import Example
+from metrics import std_dev
 
-def read_mammal_data(filename):
+
+def z_scale_features(vals):
+    '''
+    '''
+    result = np.array(vals)
+    mean = sum(result) / len(result)
+    result = result - mean
+    return result / std_dev(result)
+
+
+def interpolation_scale_features(vals):
+    '''
+    '''
+    min_val, max_val = min(vals), max(vals)
+    fit = np.polyfit([min_val, max_val], [0, 1], 1)
+    return np.polyval(fit, vals)
+    
+
+
+def read_mammal_data(filename, scale):
     data_file = open(filename, 'r')
     num_features = 0
     # process lines at top of file
@@ -28,9 +48,11 @@ def read_mammal_data(filename):
         for i in range(num_features):
             feature_vals[i].append(float(data_line[i + 1]))
     # use feature_vals to build list containing the feature vectors
-    # for each mammal
+    # for each mammal, scaling features as indicated
+    for i in range(0, num_features):
+        feature_vals[i] = scale(feature_vals[i])  # use the scale function passed as param
     feature_vector_list = []
-    for mammal in range(len(species_names)):
+    for mammal in range(0, len(species_names)):
         feature_vector = []
         for feature in range(num_features):
             feature_vector.append(feature_vals[feature][mammal])
@@ -47,8 +69,8 @@ def build_mammal_examples(feature_list, label_list, species_names):
     return examples
 
 
-def test_teeth(num_clusters, num_trials):
-    features, labels, species = read_mammal_data('input/mammal_identition.txt')
+def test_teeth(num_clusters, num_trials, scale = lambda x: x):
+    features, labels, species = read_mammal_data('input/mammal_identition.txt', scale)
     examples = build_mammal_examples(features, labels, species)
     best_clustering = try_kmeans(examples, num_clusters, num_trials)
     for c in best_clustering:
@@ -69,4 +91,7 @@ def test_teeth(num_clusters, num_trials):
 
 
 if __name__ == '__main__':
-    test_teeth(3, 40)
+    print('================ Clustering with z-scaling ================')
+    test_teeth(3, 40, z_scale_features)
+    print('================ Clusteting with interpolation-scaling ================')
+    test_teeth(3, 40, interpolation_scale_features)
